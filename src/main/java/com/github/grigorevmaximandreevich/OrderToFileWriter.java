@@ -16,7 +16,7 @@ public class OrderToFileWriter implements WriterOrdersToFile {
                 writer.newLine();
             }
         } catch (IOException e) {
-            System.err.println("Не удалось записать файл " + fileName + ": " + e.getMessage());
+            throw new RuntimeException("Не удалось записать файл " + fileName + ": " + e.getMessage(), e);
         }
     }
 }

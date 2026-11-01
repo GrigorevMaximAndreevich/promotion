@@ -16,20 +16,19 @@ public class OrderReaderAdapterTest {
     Path tempDir;
 
     @Test
-    void constructor_shouldRejectInvalidDelimiters() {
+    void constructor_shouldRejectEmptyDelimiters() {
         assertThrows(RuntimeException.class, () -> new OrderReaderAdapter(null));
         assertThrows(RuntimeException.class, () -> new OrderReaderAdapter(""));
-        assertThrows(RuntimeException.class, () -> new OrderReaderAdapter(";"));
     }
 
     @Test
     void constructor_shouldAcceptValidDelimiters() {
-        assertDoesNotThrow(() -> new OrderReaderAdapter("\\|"));
+        assertDoesNotThrow(() -> new OrderReaderAdapter("|"));
         assertDoesNotThrow(() -> new OrderReaderAdapter("#"));
     }
 
     @Test
-    void read_shouldParseAndSortRealDataCorrectly() throws IOException {
+    void read_shouldParseRealDataCorrectly() throws IOException {
         Path testFile = tempDir.resolve("discount_day.txt");
         String fileContent = """
                 2021-02-09T16:00:22|Industrial|8800
@@ -38,12 +37,12 @@ public class OrderReaderAdapterTest {
                 """;
         Files.writeString(testFile, fileContent);
 
-        OrderReaderAdapter adapter = new OrderReaderAdapter("\\|");
+        OrderReaderAdapter adapter = new OrderReaderAdapter("|");
         List<Order> orders = adapter.read(testFile.toString());
 
-        assertEquals("Recovery", orders.get(0).getCompanyName());
+        assertEquals("Industrial", orders.get(0).getCompanyName());
         assertEquals("Power Engineer", orders.get(1).getCompanyName());
-        assertEquals("Industrial", orders.get(2).getCompanyName());
+        assertEquals("Recovery", orders.get(2).getCompanyName());
     }
 
 

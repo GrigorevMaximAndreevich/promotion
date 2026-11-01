@@ -21,9 +21,7 @@ public class CalculationPriceTest {
     @Test
     void calculatePrice_shouldApplyDecreasingDiscountAndSumForSameCompany() {
         CalculationPrice calculator = new CalculationPrice(
-                new BigDecimal("0.50"),
-                new BigDecimal("10"),
-                new BigDecimal("0.05")
+                50, BigDecimal.valueOf(10), 5
         );
 
         List<Order> orders = List.of(
@@ -41,7 +39,7 @@ public class CalculationPriceTest {
     @Test
     void calculatePrice_shouldNotAllowNegativeDiscount() {
         CalculationPrice calculator = new CalculationPrice(
-                new BigDecimal("0.10"), new BigDecimal("10"), new BigDecimal("0.05")
+                10, BigDecimal.valueOf(10), 5
         );
 
         List<Order> orders = java.util.stream.IntStream.range(0, 5)
@@ -52,5 +50,30 @@ public class CalculationPriceTest {
 
         assertEquals(new BigDecimal("10000.00"), result.get("Company3"));
         assertEquals(new BigDecimal("10000.00"), result.get("Company4"));
+    }
+
+    @Test
+    void calculatePrice_shouldSortOrdersByTime() {
+        CalculationPrice calculator = new CalculationPrice(
+                50, BigDecimal.valueOf(10), 5
+        );
+
+        List<Order> orders = List.of(
+                new Order(LocalDateTime.of(2021, 2, 9, 10, 0),
+                        "Company C",
+                        new BigDecimal("1000")),
+                new Order(LocalDateTime.of(2021, 2, 9, 8, 0),
+                        "Company A",
+                        new BigDecimal("1000")),
+                new Order(LocalDateTime.of(2021, 2, 9, 9, 0),
+                        "Company B",
+                        new BigDecimal("1000"))
+        );
+
+        Map<String, BigDecimal> result = calculator.calculatePrice(orders);
+
+        assertEquals(new BigDecimal("5000.00"), result.get("Company A"));
+        assertEquals(new BigDecimal("5500.00"), result.get("Company B"));
+        assertEquals(new BigDecimal("6000.00"), result.get("Company C"));
     }
 }

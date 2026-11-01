@@ -13,6 +13,18 @@ public class Order {
     private final BigDecimal quantity;
 
     public Order(LocalDateTime orderTime, String companyName, BigDecimal quantity) {
+        if (orderTime == null) {
+            throw new IllegalArgumentException("Время заказа не может быть null");
+        }
+        if (companyName == null || companyName.isEmpty()) {
+            throw new IllegalArgumentException("Название компании не может быть null или пустым");
+        }
+        if (quantity == null) {
+            throw new IllegalArgumentException("Количество не может быть null");
+        }
+        if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Количество должно быть положительным, получено: " + quantity);
+        }
         this.orderTime = orderTime;
         this.companyName = companyName;
         this.quantity = quantity;

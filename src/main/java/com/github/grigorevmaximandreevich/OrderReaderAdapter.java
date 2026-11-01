@@ -7,25 +7,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 public class OrderReaderAdapter implements OrderReader {
 
     private final String delimiter;
 
     public OrderReaderAdapter(String delimiter) {
-        if (delimiter == null || (!delimiter.equals("\\|") && !delimiter.equals("#"))) {
-            throw new RuntimeException("Неверный формат ввода разделителя!");
+        if (delimiter == null || delimiter.isEmpty()) {
+            throw new RuntimeException("Разделитель не может быть null или пустым");
         }
-        this.delimiter = delimiter;
+        this.delimiter = Pattern.quote(delimiter);
     }
 
     @Override
     public List<Order> read(String filePath) {
         List<Order> orders = new ArrayList<>();
         for (String line : loadLines(filePath)) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
             String[] parts = line.split(delimiter);
             if (parts.length != 3) {
                 throw new RuntimeException("Ошибка в заполнении данных файла: " + line);
@@ -35,9 +37,7 @@ public class OrderReaderAdapter implements OrderReader {
             BigDecimal quantity = new BigDecimal(parts[2]);
             orders.add(new Order(orderTime, companyName, quantity));
         }
-        return orders.stream()
-                .sorted(Comparator.comparing(Order::getOrderTime))
-                .collect(Collectors.toList());
+        return orders;
     }
 
     private List<String> loadLines(String filePath) {
