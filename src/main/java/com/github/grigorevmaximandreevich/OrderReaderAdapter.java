@@ -1,7 +1,6 @@
 package com.github.grigorevmaximandreevich;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class OrderReaderAdapter implements OrderReader {
+public abstract class OrderReaderAdapter implements OrderReader {
 
     private final String delimiter;
 
     public OrderReaderAdapter(String delimiter) {
         if (delimiter == null || delimiter.isEmpty()) {
-            throw new RuntimeException("Разделитель не может быть null или пустым");
+            throw new IllegalArgumentException("Разделитель не может быть null или пустым");
         }
         this.delimiter = Pattern.quote(delimiter);
     }
@@ -25,7 +24,7 @@ public class OrderReaderAdapter implements OrderReader {
     public List<Order> read(String filePath) {
         List<Order> orders = new ArrayList<>();
         for (String line : loadLines(filePath)) {
-            if (line.trim().isEmpty()) {
+            if (line.isBlank()) {
                 continue;
             }
             String[] parts = line.split(delimiter);
@@ -34,7 +33,7 @@ public class OrderReaderAdapter implements OrderReader {
             }
             LocalDateTime orderTime = LocalDateTime.parse(parts[0]);
             String companyName = parts[1];
-            BigDecimal quantity = new BigDecimal(parts[2]);
+            int quantity = Integer.parseInt(parts[2]);
             orders.add(new Order(orderTime, companyName, quantity));
         }
         return orders;

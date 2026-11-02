@@ -10,19 +10,16 @@ public class Order {
 
     private final String companyName;
 
-    private final BigDecimal quantity;
+    private final int quantity;
 
-    public Order(LocalDateTime orderTime, String companyName, BigDecimal quantity) {
+    public Order(LocalDateTime orderTime, String companyName, int quantity) {
         if (orderTime == null) {
             throw new IllegalArgumentException("Время заказа не может быть null");
         }
         if (companyName == null || companyName.isEmpty()) {
             throw new IllegalArgumentException("Название компании не может быть null или пустым");
         }
-        if (quantity == null) {
-            throw new IllegalArgumentException("Количество не может быть null");
-        }
-        if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
+        if (quantity <= 0) {
             throw new IllegalArgumentException("Количество должно быть положительным, получено: " + quantity);
         }
         this.orderTime = orderTime;
@@ -38,7 +35,7 @@ public class Order {
         return companyName;
     }
 
-    public BigDecimal getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 

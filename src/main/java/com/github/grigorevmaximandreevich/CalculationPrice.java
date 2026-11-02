@@ -50,7 +50,7 @@ public class CalculationPrice {
             BigDecimal discountFraction = BigDecimal.valueOf(currentDiscount)
                     .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
-            BigDecimal orderPrice = order.getQuantity()
+            BigDecimal orderPrice = BigDecimal.valueOf(order.getQuantity())
                     .multiply(pricePerKg)
                     .multiply(BigDecimal.ONE.subtract(discountFraction))
                     .setScale(2, RoundingMode.HALF_UP);

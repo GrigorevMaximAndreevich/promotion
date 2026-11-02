@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CalculationPriceTest {
 
-    private Order createOrder(String company, String quantity, int hour) {
+    private Order createOrder(String company, int quantity, int hour) {
         return new Order(LocalDateTime.of(
                 2021, 2, 9, hour, 0),
                 company,
-                new BigDecimal(quantity));
+                quantity);
     }
 
     @Test
@@ -25,9 +25,9 @@ public class CalculationPriceTest {
         );
 
         List<Order> orders = List.of(
-                createOrder("Recovery", "1000", 8),
-                createOrder("Power Engineer", "1000", 9),
-                createOrder("Power Engineer", "1000", 10)
+                createOrder("Recovery", 1000, 8),
+                createOrder("Power Engineer", 1000, 9),
+                createOrder("Power Engineer", 1000, 10)
         );
 
         Map<String, BigDecimal> result = calculator.calculatePrice(orders);
@@ -43,7 +43,7 @@ public class CalculationPriceTest {
         );
 
         List<Order> orders = java.util.stream.IntStream.range(0, 5)
-                .mapToObj(i -> createOrder("Company" + i, "1000", i + 1))
+                .mapToObj(i -> createOrder("Company" + i, 1000, i + 1))
                 .toList();
 
         Map<String, BigDecimal> result = calculator.calculatePrice(orders);
@@ -61,13 +61,13 @@ public class CalculationPriceTest {
         List<Order> orders = List.of(
                 new Order(LocalDateTime.of(2021, 2, 9, 10, 0),
                         "Company C",
-                        new BigDecimal("1000")),
+                        1000),
                 new Order(LocalDateTime.of(2021, 2, 9, 8, 0),
                         "Company A",
-                        new BigDecimal("1000")),
+                        1000),
                 new Order(LocalDateTime.of(2021, 2, 9, 9, 0),
                         "Company B",
-                        new BigDecimal("1000"))
+                        1000)
         );
 
         Map<String, BigDecimal> result = calculator.calculatePrice(orders);
